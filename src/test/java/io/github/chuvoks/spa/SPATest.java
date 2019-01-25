@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package io.github.chuvoks.spa;
 
 import org.joda.time.DateTime;
