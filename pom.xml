@@ -33,9 +33,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/chuvoks/spa.git</connection>
-        <developerConnection>scm:git:ssh://github.com:chuvoks/spa.git</developerConnection>
-        <url>http://github.com/chuvoks/spa/tree/master</url>
+        <connection>scm:git:git@github.com/chuvoks/spa.git</connection>
+        <developerConnection>scm:git:git@github.com:chuvoks/spa.git</developerConnection>
+        <url>https://github.com/chuvoks/spa/</url>
     </scm>
 
     <issueManagement>
@@ -45,6 +45,17 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -145,6 +156,16 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.3</version>
+                        <configuration>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <releaseProfiles>release</releaseProfiles>
+                            <goals>deploy</goals>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

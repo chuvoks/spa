@@ -56,13 +56,13 @@ public class SPADemo {
                 delta_t,
                 h0_prime);
         SPA spa = SPA.from(parameters);
+        SunriseTransitSunset sunRts = SunriseTransitSunset.from(parameters);
+        EquationOfTime eot = EquationOfTime.from(spa);
         System.out.println("zenith:  " + spa.getTopocentricZenithAngle() + " degrees"); // 50.11162202424746
         System.out.println("azimuth: " + spa.getTopocentricAzimuthAngle() + " degrees"); // 194.34024051019844 (0° to 360°, measured eastward from north)
-        SunriseTransitSunset sunRts = SunriseTransitSunset.from(parameters);
-        System.out.println("surise:  " + sunRts.getSunriseMillis() + " ms"); // 1066396363440 <==> 2003-10-17T13:12:43.440Z
+        System.out.println("sunrise: " + sunRts.getSunriseMillis() + " ms"); // 1066396363440 <==> 2003-10-17T13:12:43.440Z
         System.out.println("transit: " + sunRts.getSunTransitMillis() + " ms"); // 1066416364962 <==> 2003-10-17T18:46:04.962Z
         System.out.println("sunset:  " + sunRts.getSunsetMillis() + " ms"); // 1066436419199 <==> 2003-10-18T00:20:19.199Z
-        EquationOfTime eot = EquationOfTime.from(spa);
         System.out.println("EOT:     " + eot.getEquationOfTime() + " minutes"); // 14.641510770857865
     }
 }
