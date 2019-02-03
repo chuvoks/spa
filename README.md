@@ -23,6 +23,6 @@ There is a trivial demo application: [src/test/java/io/github/chuvoks/spademo/SP
 <dependency>
   <groupId>io.github.chuvoks</groupId>
   <artifactId>spa</artifactId>
-  <version>0.9-SNAPSHOT</version>
+  <version>0.9</version>
 </dependency>
 ```
