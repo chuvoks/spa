@@ -43,7 +43,7 @@ public class SPADemo {
         double surfaceSlope = 30; // degrees
         double surfaceAzimuthRotation = -10; // degrees
         double delta_t = 67; // seconds
-        double h0_prime = SunDeclination.twilight; // -8.333 degrees
+        double sunElevation = SP.h0_prime; // -0.8333 degrees
         SPAParameters parameters = new SPAParameters(
                 timeInMillis,
                 longitude,
@@ -54,7 +54,7 @@ public class SPADemo {
                 surfaceSlope,
                 surfaceAzimuthRotation,
                 delta_t,
-                h0_prime);
+                sunElevation);
         SPA spa = SPA.from(parameters);
         SunriseTransitSunset sunRts = SunriseTransitSunset.from(parameters);
         EquationOfTime eot = EquationOfTime.from(spa);

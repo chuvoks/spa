@@ -26,7 +26,7 @@ public class SunriseTransitSunsetParameters {
     private final double longitude;
     private final double latitude;
     private final double Delta_T;
-    private final double h0_prime;
+    private final double sunElevation;
 
     /**
      * @param timeInMillis time in milliseconds since unix epoc. Notice that the actual calculation is done at 0 UT.
@@ -38,14 +38,14 @@ public class SunriseTransitSunsetParameters {
      *                     Negative for South, Positive for North. e.g. 39.742476 == 39°44′32.914" N.
      * @param Delta_T      the difference between the Earth rotation time and the Terrestrial Time, in
      *                     seconds. e.g. 64.0 (rough estimate for year 2002).
-     * @param h0_prime     sun elevation angle (in degrees) to calculate the times of sunriseMillis and sunsetMillis. E.g.
-     *                     {@link SunDeclination#twilight}.
+     * @param sunElevation sun elevation angle (in degrees) to calculate the times of sunrise and sunset. E.g.
+     *                     {@link SP#h0_prime}.
      */
     public SunriseTransitSunsetParameters(long timeInMillis,
                                           double longitude,
                                           double latitude,
                                           double Delta_T,
-                                          double h0_prime) {
+                                          double sunElevation) {
         this.timeInMillis = timeInMillis;
         if (longitude > 180.0)
             throw new IllegalArgumentException("longitude=" + longitude + " must be less than or equal to 180 degrees");
@@ -58,7 +58,7 @@ public class SunriseTransitSunsetParameters {
             throw new IllegalArgumentException("latitude=" + latitude + " must be greater than or equal to -90 degrees");
         this.latitude = latitude;
         this.Delta_T = Delta_T;
-        this.h0_prime = h0_prime;
+        this.sunElevation = sunElevation;
     }
 
     public long getTimeInMillis() {
@@ -77,8 +77,8 @@ public class SunriseTransitSunsetParameters {
         return Delta_T;
     }
 
-    public double getH0_prime() {
-        return h0_prime;
+    public double getSunElevation() {
+        return sunElevation;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class SunriseTransitSunsetParameters {
         if (Double.compare(that.longitude, longitude) != 0) return false;
         if (Double.compare(that.latitude, latitude) != 0) return false;
         if (Double.compare(that.Delta_T, Delta_T) != 0) return false;
-        return Double.compare(that.h0_prime, h0_prime) == 0;
+        return Double.compare(that.sunElevation, sunElevation) == 0;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class SunriseTransitSunsetParameters {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(Delta_T);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(h0_prime);
+        temp = Double.doubleToLongBits(sunElevation);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
@@ -118,7 +118,7 @@ public class SunriseTransitSunsetParameters {
         sb.append(", longitude=").append(longitude);
         sb.append(", latitude=").append(latitude);
         sb.append(", Delta_T=").append(Delta_T);
-        sb.append(", h0_prime=").append(h0_prime);
+        sb.append(", sunElevation=").append(sunElevation);
         sb.append('}');
         return sb.toString();
     }

@@ -798,12 +798,12 @@ public final class SP {
     }
 
     /**
-     * Calculate the apparent sun longitude (lamda, in degrees) (27)
+     * Calculate the apparent sun longitude (lambda, in degrees) (27)
      *
      * @param Theta
      * @param delta_psi
      * @param Delta_tau
-     * @return lamda
+     * @return lambda
      */
     public static double apparentSunLongitude(double Theta, double delta_psi, double Delta_tau) {
         double labda = Theta + delta_psi + Delta_tau;
@@ -815,45 +815,40 @@ public final class SP {
      *
      * @param jd
      * @param jc
-     * @param delta_psi
-     * @param epsilon
+     * @param Delta_psi
+     * @param epsilon_rad
      * @return nu
      */
-    public static double apparentGreenwichSiderealTime(double jd, double jc, double delta_psi, double epsilon) {
+    public static double apparentGreenwichSiderealTime(double jd, double jc, double Delta_psi, double epsilon_rad) {
         double nu0 = limitDegrees(280.46061837 + 360.98564736629 * (jd - 2451545) + 0.000387933 * (jc * jc) - (jc * jc * jc) / 38710000.0);
-        double nu = nu0 + delta_psi * cos(deg2rad(epsilon));
+        double nu = nu0 + Delta_psi * cos(epsilon_rad);
         return nu;
     }
 
     /**
      * Calculate the geocentric sun right ascension, alpha (in degrees) (30)
      *
-     * @param lamda
-     * @param epsilon
-     * @param beta
+     * @param lambda_rad
+     * @param epsilon_rad
+     * @param beta_rad
      * @return alpha
      */
-    public static double geocentricSunRightAscension(double lamda, double epsilon, double beta) {
-        double l = deg2rad(lamda);
-        double e = deg2rad(epsilon);
-        double alpha = limitDegrees(rad2deg(atan2(sin(l) * cos(e) - tan(deg2rad(beta)) * sin(e), cos(l))));
+    public static double geocentricSunRightAscension(double lambda_rad, double epsilon_rad, double beta_rad) {
+        double alpha = limitDegrees(rad2deg(atan2(sin(lambda_rad) * cos(epsilon_rad) - tan(beta_rad) * sin(epsilon_rad), cos(lambda_rad))));
         return alpha;
     }
 
     /**
-     * Calculate the geocentric sun declination, delta (in degrees) (31)
+     * Calculate the geocentric sun declination, delta (in radians) (31)
      *
-     * @param beta
-     * @param epsilon
-     * @param lamda
-     * @return delta
+     * @param beta_rad
+     * @param epsilon_rad
+     * @param lambda_rad
+     * @return delta_rad
      */
-    public static double geocentricSunDeclination(double beta, double epsilon, double lamda) {
-        double b = deg2rad(beta);
-        double e = deg2rad(epsilon);
-        double l = deg2rad(lamda);
-        double delta = rad2deg(asin(sin(b) * cos(e) + cos(b) * sin(e) * sin(l)));
-        return delta;
+    public static double geocentricSunDeclination(double beta_rad, double epsilon_rad, double lambda_rad) {
+        double delta_rad = asin(sin(beta_rad) * cos(epsilon_rad) + cos(beta_rad) * sin(epsilon_rad) * sin(lambda_rad));
+        return delta_rad;
     }
 
     /**
@@ -883,12 +878,12 @@ public final class SP {
     /**
      * Calculate the term u (in radians) (34)
      *
-     * @param latitude
+     * @param phi_rad
      * @return u
      */
-    public static double termU(double latitude) {
-        double phi = latitude;
-        double u = atan(0.99664719 * tan(deg2rad(phi)));
+    public static double termU(double phi_rad) {
+        double phi = phi_rad;
+        double u = atan(0.99664719 * tan(phi_rad));
         ;
         return u;
     }
@@ -898,13 +893,12 @@ public final class SP {
      *
      * @param u
      * @param elevation
-     * @param latitude
+     * @param phi_rad
      * @return x
      */
-    public static double termX(double u, double elevation, double latitude) {
+    public static double termX(double u, double elevation, double phi_rad) {
         double E = elevation;
-        double phi = latitude;
-        double x = cos(u) + E * cos(deg2rad(phi)) / 6378140.0;
+        double x = cos(u) + E * cos(phi_rad) / 6378140.0;
         return x;
     }
 
@@ -913,13 +907,12 @@ public final class SP {
      *
      * @param u
      * @param elevation
-     * @param latitude
+     * @param phi_rad
      * @return y
      */
-    public static double termY(double u, double elevation, double latitude) {
+    public static double termY(double u, double elevation, double phi_rad) {
         double E = elevation;
-        double phi = latitude;
-        double y = 0.99664719 * sin(u) + E * sin(deg2rad(phi)) / 6378140.0;
+        double y = 0.99664719 * sin(u) + E * sin(phi_rad) / 6378140.0;
         return y;
     }
 
@@ -927,13 +920,13 @@ public final class SP {
      * Calculate the parallax in the sun right ascension, Delta_alpha (in degrees) (37)
      *
      * @param x
-     * @param xi
-     * @param Eta
-     * @param delta
+     * @param xi_rad
+     * @param Eta_rad
+     * @param delta_rad
      * @return Delta_alpha
      */
-    public static double parallaxInTheSunRightAscension(double x, double xi, double Eta, double delta) {
-        double Delta_alpha = rad2deg(atan2(-x * sin(deg2rad(xi)) * sin(deg2rad(Eta)), cos(deg2rad(delta)) - x * sin(deg2rad(xi)) * cos(deg2rad(Eta))));
+    public static double parallaxInTheSunRightAscension(double x, double xi_rad, double Eta_rad, double delta_rad) {
+        double Delta_alpha = rad2deg(atan2(-x * sin(xi_rad) * sin(Eta_rad), cos(delta_rad) - x * sin(xi_rad) * cos(Eta_rad)));
         return Delta_alpha;
     }
 
@@ -950,21 +943,21 @@ public final class SP {
     }
 
     /**
-     * Calculate the topocentric sun declination, delta_prime (in degrees) (39)
+     * Calculate the topocentric sun declination, delta_prime (in radians) (39)
      *
-     * @param delta
+     * @param delta_rad
      * @param y
      * @param x
-     * @param xi
+     * @param xi_rad
      * @param Delta_alpha
-     * @param Eta
-     * @return delta_prime
+     * @param Eta_rad
+     * @return delta_prime_rad
      */
-    public static double topocentricSunDeclination(double delta, double y, double x, double xi, double Delta_alpha, double Eta) {
-        double delta_prime = rad2deg(atan2(
-                sin(deg2rad(delta)) - y * sin(deg2rad(xi)) * cos(deg2rad(Delta_alpha)),
-                cos(deg2rad(delta)) - x * sin(deg2rad(xi)) * cos(deg2rad(Eta))));
-        return delta_prime;
+    public static double topocentricSunDeclination(double delta_rad, double y, double x, double xi_rad, double Delta_alpha, double Eta_rad) {
+        double delta_prime_rad = atan2(
+                sin(delta_rad) - y * sin(xi_rad) * cos(deg2rad(Delta_alpha)),
+                cos(delta_rad) - x * sin(xi_rad) * cos(Eta_rad));
+        return delta_prime_rad;
     }
 
 
@@ -983,14 +976,14 @@ public final class SP {
     /**
      * Calculate the topocentric elevation angle without atmospheric refraction correction, e0 (in degrees) (41)
      *
-     * @param latitude
-     * @param Delta_prime
-     * @param Eta_prime
+     * @param phi_rad
+     * @param delta_prime_rad
+     * @param Eta_prime_rad
      * @return e0
      */
-    public static double topocentricElevationAngleWithoutAtmosphericRefractionCorrection(double latitude, double Delta_prime, double Eta_prime) {
-        double e0 = rad2deg(asin(sin(deg2rad(latitude)) * sin(deg2rad(Delta_prime)) +
-                cos(deg2rad(latitude)) * cos(deg2rad(Delta_prime)) * cos(deg2rad(Eta_prime))));
+    public static double topocentricElevationAngleWithoutAtmosphericRefractionCorrection(double phi_rad, double delta_prime_rad, double Eta_prime_rad) {
+        double e0 = rad2deg(asin(sin(phi_rad) * sin(delta_prime_rad) +
+                cos(phi_rad) * cos(delta_prime_rad) * cos(Eta_prime_rad)));
         return e0;
     }
 
@@ -1042,14 +1035,13 @@ public final class SP {
     /**
      * Calculate the topocentric astronomers azimuth angle, Gamma (in degrees) (45)
      *
-     * @param Eta_prime
-     * @param latitude
-     * @param delta_prime
+     * @param Eta_prime_rad
+     * @param phi_rad
+     * @param delta_prime_rad
      * @return Gamma
      */
-    public static double topocentricAstronomersAzimuthAngle(double Eta_prime, double latitude, double delta_prime) {
-        double phi = deg2rad(latitude);
-        double Gamma = limitDegrees(rad2deg(atan2(sin(deg2rad(Eta_prime)), cos(deg2rad(Eta_prime)) * sin(phi) - tan(deg2rad(delta_prime)) * cos(phi))));
+    public static double topocentricAstronomersAzimuthAngle(double Eta_prime_rad, double phi_rad, double delta_prime_rad) {
+        double Gamma = limitDegrees(rad2deg(atan2(sin(Eta_prime_rad), cos(Eta_prime_rad) * sin(phi_rad) - tan(delta_prime_rad) * cos(phi_rad))));
         return Gamma;
     }
 
@@ -1067,16 +1059,16 @@ public final class SP {
     /**
      * Calculate the incidence angle for a surface oriented in any direction, I (in degrees) (47)
      *
-     * @param theta
+     * @param theta_rad
      * @param surfaceSlope
      * @param Gamma
      * @param surfaceAzimuthRotation
      * @return I
      */
-    public static double incidenceAngleForSurface(double theta, double surfaceSlope, double Gamma, double surfaceAzimuthRotation) {
-        double omega = surfaceSlope;
+    public static double incidenceAngleForSurface(double theta_rad, double surfaceSlope, double Gamma, double surfaceAzimuthRotation) {
+        double omega_rad = deg2rad(surfaceSlope);
         double gamma = surfaceAzimuthRotation;
-        double I = rad2deg(acos(cos(deg2rad(theta)) * cos(deg2rad(omega)) + sin(deg2rad(omega)) * sin(deg2rad(theta)) * cos(deg2rad(Gamma - gamma))));
+        double I = rad2deg(acos(cos(theta_rad) * cos(omega_rad) + sin(omega_rad) * sin(theta_rad) * cos(deg2rad(Gamma - gamma))));
         return I;
     }
 
@@ -1145,14 +1137,14 @@ public final class SP {
     /**
      * Calculate the local hour angle corresponding to the sun elevation equals -0.8333, H0 (in degrees). (A4)
      *
-     * @param latitude
-     * @param delta0
+     * @param phi_rad
+     * @param delta0_rad
      * @param h0_prime
      * @return H0 or -1 if sun is always above or below the horizon for that day.
      */
-    public static double localHourAngleAtSunriseSunset(double latitude, double delta0, double h0_prime) {
+    public static double localHourAngleAtSunriseSunset(double phi_rad, double delta0_rad, double h0_prime) {
         double H0 = -1;
-        double aux = (sin(deg2rad(h0_prime)) - sin(deg2rad(latitude)) * sin(deg2rad(delta0))) / (cos(deg2rad(latitude)) * cos(deg2rad(delta0)));
+        double aux = (sin(deg2rad(h0_prime)) - sin(phi_rad) * sin(delta0_rad)) / (cos(phi_rad) * cos(delta0_rad));
         if (aux >= -1 && aux <= 1) {
             H0 = limitDegrees180(rad2deg(acos(aux)));
         }
@@ -1174,23 +1166,21 @@ public final class SP {
     /**
      * Calculate the sun altitude, h (in degrees) (A12)
      *
-     * @param latitude
-     * @param delta_prime
+     * @param phi_rad
+     * @param delta_prime_rad
      * @param H_prime
      * @return h
      */
-    public static double sunAltitude(double latitude, double delta_prime, double H_prime) {
-        double phi = latitude;
-        double h = rad2deg(asin(sin(deg2rad(phi)) * sin(deg2rad(delta_prime)) + cos(deg2rad(phi)) * cos(deg2rad(delta_prime)) * cos(deg2rad(H_prime))));
+    public static double sunAltitude(double phi_rad, double delta_prime_rad, double H_prime) {
+        double h = rad2deg(asin(sin(phi_rad) * sin(delta_prime_rad) + cos(phi_rad) * cos(delta_prime_rad) * cos(deg2rad(H_prime))));
         return h;
     }
 
     /**
      * Calculate the sunrise R or sunset S, (in fraction of day)
      */
-    private static double sunriseSunset(double mx, double hx, double delta_prime_x, double latitude, double H_prime_x, double h0_prime) {
-        double phi = latitude;
-        double X = mx + (hx - h0_prime) / (360 * cos(deg2rad(delta_prime_x)) * cos(deg2rad(phi)) * sin(deg2rad(H_prime_x)));
+    private static double sunriseSunset(double mx, double hx, double delta_prime_rad_x, double phi_rad, double H_prime_x, double h0_prime) {
+        double X = mx + (hx - h0_prime) / (360 * cos(delta_prime_rad_x) * cos(phi_rad) * sin(deg2rad(H_prime_x)));
         return X;
     }
 
@@ -1199,13 +1189,13 @@ public final class SP {
      *
      * @param m1
      * @param h1
-     * @param delta_prime_1
-     * @param latitude
+     * @param delta_prime_rad_1
+     * @param phi_rad
      * @param H_prime_1
      * @return R
      */
-    public static double sunrise(double m1, double h1, double delta_prime_1, double latitude, double H_prime_1, double h0_prime) {
-        return sunriseSunset(m1, h1, delta_prime_1, latitude, H_prime_1, h0_prime);
+    public static double sunrise(double m1, double h1, double delta_prime_rad_1, double phi_rad, double H_prime_1, double h0_prime) {
+        return sunriseSunset(m1, h1, delta_prime_rad_1, phi_rad, H_prime_1, h0_prime);
     }
 
     /**
@@ -1213,13 +1203,13 @@ public final class SP {
      *
      * @param m2
      * @param h2
-     * @param delta_prime_2
-     * @param latitude
+     * @param delta_prime_rad_2
+     * @param phi_rad
      * @param H_prime_2
      * @return R
      */
-    public static double sunset(double m2, double h2, double delta_prime_2, double latitude, double H_prime_2, double h0_prime) {
-        return sunriseSunset(m2, h2, delta_prime_2, latitude, H_prime_2, h0_prime);
+    public static double sunset(double m2, double h2, double delta_prime_rad_2, double phi_rad, double H_prime_2, double h0_prime) {
+        return sunriseSunset(m2, h2, delta_prime_rad_2, phi_rad, H_prime_2, h0_prime);
     }
 
     public static long dayInMillis = 24 * 60 * 60 * 1000;
@@ -1252,8 +1242,9 @@ public final class SP {
         double Delta_psi = psiEpsilon[0];
         double Delta_epsilon = psiEpsilon[1];
         double epsilon = trueObliquityOfTheEcliptic(jme, Delta_epsilon);
+        double epsilon_rad = Math2.deg2rad(epsilon);
         double jc = julianCentury(jd);
-        double nu = apparentGreenwichSiderealTime(jd, jc, Delta_psi, epsilon);
+        double nu = apparentGreenwichSiderealTime(jd, jc, Delta_psi, epsilon_rad);
         return nu;
     }
 
@@ -1272,16 +1263,23 @@ public final class SP {
         double R = earthRadiusVector(jme);
         double Theta = geocentricLongitude(L);
         double beta = geocentricLatitude(B);
+        double beta_rad = Math2.deg2rad(beta);
         double[] psiEpsilon = nutationLongitudeObliquity(jce);
         double Delta_psi = psiEpsilon[0];
         double Delta_epsilon = psiEpsilon[1];
         double Delta_tau = abberationCorrection(R);
         double epsilon = trueObliquityOfTheEcliptic(jme, Delta_epsilon);
-        double lamda = apparentSunLongitude(Theta, Delta_psi, Delta_tau);
-        double alpha = geocentricSunRightAscension(lamda, epsilon, beta);
-        double delta = geocentricSunDeclination(beta, epsilon, lamda);
-        return new double[]{alpha, delta};
+        double epsilon_rad = Math2.deg2rad(epsilon);
+        double lambda = apparentSunLongitude(Theta, Delta_psi, Delta_tau);
+        double lambda_rad = Math2.deg2rad(lambda);
+        double alpha = geocentricSunRightAscension(lambda_rad, epsilon_rad, beta_rad);
+        double delta_rad = geocentricSunDeclination(beta_rad, epsilon_rad, lambda_rad);
+        return new double[]{alpha, delta_rad};
     }
+
+    private static final int D_minus = 0;
+    private static final int D_zero = 1;
+    private static final int D_plus = 2;
 
     /**
      * Calculate sunrise, sun transit, and sunset times (in fraction of day)
@@ -1290,6 +1288,7 @@ public final class SP {
      * @return new double[]{suntransit, sunrise, sunset} or null if sun is below or above the horizon whole day
      */
     public static double[] sunRiseTransitSet(SunriseTransitSunsetParameters in) {
+        double phi_rad = Math2.deg2rad(in.getLatitude());
         long ut0time = toZeroUT(in.getTimeInMillis());
         double Delta_t = in.getDelta_T();
         // Calculate the apparent sidereal time at Greenwich at 0 UT, nu (in degrees), using equation 29.
@@ -1300,23 +1299,20 @@ public final class SP {
         // for the day before the day of interest (D-1),
         // the day of interest (D0)
         // then the day after (D +1), in degrees.
-        int D_minus = 0;
-        int D_zero = 1;
-        int D_plus = 2;
         long[] D = new long[]{-dayInMillis, 0, dayInMillis};
         double[] alpha = new double[3];
         double[] delta = new double[3];
         for (int i = 0; i < 3; i++) {
             double[] alphadelta = geocentricRightAscensionAndDeclination(ut0time + D[i], Delta_t);
             alpha[i] = alphadelta[0];
-            delta[i] = alphadelta[1];
+            delta[i] = Math2.rad2deg(alphadelta[1]);
         }
 
         double[] m_i = new double[3];
         // Calculate the approximate sun transit time
         m_i[0] = approximateSunTransitTime(alpha[D_zero], in.getLongitude(), nu);
         // Calculate the local hour angle
-        double H0 = localHourAngleAtSunriseSunset(in.getLatitude(), delta[D_zero], in.getH0_prime());
+        double H0 = localHourAngleAtSunriseSunset(phi_rad, Math2.deg2rad(delta[D_zero]), in.getSunElevation());
         if (H0 >= 0) {
             // Calculate the approximate sunrise
             m_i[1] = m_i[0] - H0 / 360; // (A5)
@@ -1359,10 +1355,10 @@ public final class SP {
 
             // Calculate the values alpha_prime and delta_prime, in degrees
             double[] alpha_prime_i = new double[3];
-            double[] delta_prime_i = new double[3];
+            double[] delta_prime_rad_i = new double[3];
             for (int i = 0; i < 3; i++) {
                 alpha_prime_i[i] = alpha[D_zero] + (n_i[i] * (a + b + c * n_i[i])) / 2; // (A9)
-                delta_prime_i[i] = delta[D_zero] + (n_i[i] * (a_prime + b_prime + c_prime * n_i[i])) / 2; // (A10)
+                delta_prime_rad_i[i] = Math2.deg2rad(delta[D_zero] + (n_i[i] * (a_prime + b_prime + c_prime * n_i[i])) / 2); // (A10)
             }
 
             // Calculate the local hour angle for the sun transit, sunrise, and sunset, H_prime_i (in degrees)
@@ -1374,17 +1370,17 @@ public final class SP {
             // Calculate the sun altitude for the sun transit, sunrise, and sunset, h_i (in degrees)
             double[] h_i = new double[3];
             for (int i = 0; i < 3; i++) {
-                h_i[i] = sunAltitude(in.getLatitude(), delta_prime_i[i], H_prime_i[i]);
+                h_i[i] = sunAltitude(phi_rad, delta_prime_rad_i[i], H_prime_i[i]);
             }
 
             // Calculate the sun transit, T (in fraction of day)
             double T = m_i[0] - H_prime_i[0] / 360;
 
             // Calculate the sunrise, R (in fraction of day)
-            double R = sunrise(m_i[1], h_i[1], delta_prime_i[1], in.getLatitude(), H_prime_i[1], in.getH0_prime());
+            double R = sunrise(m_i[1], h_i[1], delta_prime_rad_i[1], phi_rad, H_prime_i[1], in.getSunElevation());
 
             // Calculate the sunset, S (in fraction of day)
-            double S = sunset(m_i[2], h_i[2], delta_prime_i[2], in.getLatitude(), H_prime_i[2], in.getH0_prime());
+            double S = sunset(m_i[2], h_i[2], delta_prime_rad_i[2], phi_rad, H_prime_i[2], in.getSunElevation());
 
             return new double[]{T, R, S};
         } else {

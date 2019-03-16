@@ -81,7 +81,7 @@ public class SunriseTransitSunset {
      * Calculate sunrise, transit and sunset using given parameters.
      *
      * @return sunrise, transit and sunset times or null if sun is below or above the horizon (defined by
-     * {@link SunriseTransitSunsetParameters#getH0_prime()}) whole day
+     * {@link SunriseTransitSunsetParameters#getSunElevation()}) whole day
      */
     public static SunriseTransitSunset from(SunriseTransitSunsetParameters p) {
         double[] sunrts = SP.sunRiseTransitSet(p);

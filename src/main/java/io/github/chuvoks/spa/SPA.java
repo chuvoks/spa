@@ -16,6 +16,8 @@
 
 package io.github.chuvoks.spa;
 
+import static io.github.chuvoks.spa.Math2.deg2rad;
+
 /**
  * Solar Position Algorithm (SPA).
  * <p>
@@ -61,7 +63,7 @@ public class SPA {
                double Delta_psi,
                double Delta_epsilon,
                double epsilon,
-               double lamda,
+               double lambda,
                double alpha,
                double delta,
                double Eta,
@@ -84,7 +86,7 @@ public class SPA {
         this.nutationInLongitude = Delta_psi;
         this.nutationInObliquity = Delta_epsilon;
         this.trueObliquityOfTheEcliptic = epsilon;
-        this.apparentSunLongitude = lamda;
+        this.apparentSunLongitude = lambda;
         this.geocentricSunRightAscension = alpha;
         this.geocentricSunDeclination = delta;
         this.observerLocalHourAngle = Eta;
@@ -170,7 +172,7 @@ public class SPA {
     }
 
     /**
-     * Apparent sun longitude, lamda (in degrees)
+     * Apparent sun longitude, lambda (in degrees)
      */
     public double getApparentSunLongitude() {
         return apparentSunLongitude;
@@ -381,6 +383,7 @@ public class SPA {
      * Calculate SPA using given parameters.
      */
     public static SPA from(SPAParameters p) {
+        double phi_rad = Math2.deg2rad(p.getLatitude());
         double jd = SP.julianDay(p.getTimeInMillis());
         double jde = SP.julianEphemerisDay(jd, p.getDelta_T());
         double jce = SP.julianCentury(jde);
@@ -390,32 +393,40 @@ public class SPA {
         double R = SP.earthRadiusVector(jme);
         double Theta = SP.geocentricLongitude(L);
         double beta = SP.geocentricLatitude(B);
+        double beta_rad = Math2.deg2rad(beta);
         double[] psiEpsilon = SP.nutationLongitudeObliquity(jce);
         double Delta_psi = psiEpsilon[0];
         double Delta_epsilon = psiEpsilon[1];
         double Delta_tau = SP.abberationCorrection(R);
         double epsilon = SP.trueObliquityOfTheEcliptic(jme, Delta_epsilon);
-        double lamda = SP.apparentSunLongitude(Theta, Delta_psi, Delta_tau);
-        double alpha = SP.geocentricSunRightAscension(lamda, epsilon, beta);
-        double delta = SP.geocentricSunDeclination(beta, epsilon, lamda);
+        double epsilon_rad = deg2rad(epsilon);
+        double lambda = SP.apparentSunLongitude(Theta, Delta_psi, Delta_tau);
+        double lambda_rad = Math2.deg2rad(lambda);
+        double alpha = SP.geocentricSunRightAscension(lambda_rad, epsilon_rad, beta_rad);
+        double delta_rad = SP.geocentricSunDeclination(beta_rad, epsilon_rad, lambda_rad);
+        double delta = Math2.rad2deg(delta_rad);
         double jc = SP.julianCentury(jd);
-        double nu = SP.apparentGreenwichSiderealTime(jd, jc, Delta_psi, epsilon);
+        double nu = SP.apparentGreenwichSiderealTime(jd, jc, Delta_psi, epsilon_rad);
         double Eta = SP.observerLocalHourAngle(nu, p.getLongitude(), alpha);
-        double xi = SP.equatorialHorizontalParallaxOfTheSun(R);
-        double u = SP.termU(p.getLatitude());
-        double x = SP.termX(u, p.getElevation(), p.getLatitude());
-        double y = SP.termY(u, p.getElevation(), p.getLatitude());
-        double Delta_alpha = SP.parallaxInTheSunRightAscension(x, xi, Eta, delta);
+        double Eta_rad = Math2.deg2rad(Eta);
+        double xi_rad = Math2.deg2rad(SP.equatorialHorizontalParallaxOfTheSun(R));
+        double u = SP.termU(phi_rad);
+        double x = SP.termX(u, p.getElevation(), phi_rad);
+        double y = SP.termY(u, p.getElevation(), phi_rad);
+        double Delta_alpha = SP.parallaxInTheSunRightAscension(x, xi_rad, Eta_rad, delta_rad);
         double alpha_prime = SP.topocentricSunRightAscension(alpha, Delta_alpha);
-        double delta_prime = SP.topocentricSunDeclination(delta, y, x, xi, Delta_alpha, Eta);
+        double delta_prime_rad = SP.topocentricSunDeclination(delta_rad, y, x, xi_rad, Delta_alpha, Eta_rad);
+        double delta_prime = Math2.rad2deg(delta_prime_rad);
         double Eta_prime = SP.topocentricLocalHourAngle(Eta, Delta_alpha);
-        double e0 = SP.topocentricElevationAngleWithoutAtmosphericRefractionCorrection(p.getLatitude(), delta_prime, Eta_prime);
-        double delta_e = SP.atmosphericRefractionCorrection(p.getPressure(), p.getTemperature(), e0, p.getH0_prime());
+        double Eta_prime_rad = Math2.deg2rad(Eta_prime);
+        double e0 = SP.topocentricElevationAngleWithoutAtmosphericRefractionCorrection(phi_rad, delta_prime_rad, Eta_prime_rad);
+        double delta_e = SP.atmosphericRefractionCorrection(p.getPressure(), p.getTemperature(), e0, p.getSunElevation());
         double e = SP.topocentricElevationAngle(e0, delta_e);
         double theta = SP.topocentricZenithAngle(e);
-        double Gamma = SP.topocentricAstronomersAzimuthAngle(Eta_prime, p.getLatitude(), delta_prime);
+        double theta_rad = Math2.deg2rad(theta);
+        double Gamma = SP.topocentricAstronomersAzimuthAngle(Eta_prime_rad, phi_rad, delta_prime_rad);
         double Phi = SP.topocentricAzimuthAngle(Gamma);
-        double I = SP.incidenceAngleForSurface(theta, p.getSurfaceSlope(), Gamma, p.getSurfaceAzimuthRotation());
+        double I = SP.incidenceAngleForSurface(theta_rad, p.getSurfaceSlope(), Gamma, p.getSurfaceAzimuthRotation());
         return new SPA(
                 jd,
                 jme,
@@ -427,7 +438,7 @@ public class SPA {
                 Delta_psi,
                 Delta_epsilon,
                 epsilon,
-                lamda,
+                lambda,
                 alpha,
                 delta,
                 Eta,

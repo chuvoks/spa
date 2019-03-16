@@ -44,8 +44,8 @@ public class SPAParameters extends SunriseTransitSunsetParameters {
      *                               east from south, respectively. -180.0 to +180.0.
      * @param Delta_T                the difference between the Earth rotation time and the Terrestrial Time, in
      *                               seconds. e.g. 64.0 (rough estimate for year 2002).
-     * @param h0_prime               Sun elevation angle (in degrees). Used to calculate atmospheric refraction
-     *                               correction. E.g. {@link SunDeclination#twilight}.
+     * @param sunElevation           Sun elevation angle (in degrees) to calculate the times of sunrise and sunset or
+     *                               if atmospheric refraction correction is needed. E.g. {@link SP#h0_prime}.
      */
     public SPAParameters(long timeInMillis,
                          double longitude,
@@ -56,8 +56,8 @@ public class SPAParameters extends SunriseTransitSunsetParameters {
                          double surfaceSlope,
                          double surfaceAzimuthRotation,
                          double Delta_T,
-                         double h0_prime) {
-        super(timeInMillis, longitude, latitude, Delta_T, h0_prime);
+                         double sunElevation) {
+        super(timeInMillis, longitude, latitude, Delta_T, sunElevation);
         this.pressure = pressure;
         this.elevation = elevation;
         this.temperature = temperature;
@@ -137,7 +137,7 @@ public class SPAParameters extends SunriseTransitSunsetParameters {
         sb.append(", longitude=").append(getLongitude());
         sb.append(", latitude=").append(getLatitude());
         sb.append(", delta_T=").append(getDelta_T());
-        sb.append(", h0_prime=").append(getH0_prime());
+        sb.append(", h0_prime=").append(getSunElevation());
         sb.append('}');
         return sb.toString();
     }

@@ -20,6 +20,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.junit.Test;
 
+import static java.lang.Math.abs;
 import static org.junit.Assert.assertEquals;
 
 public class SPATest {
@@ -35,7 +36,7 @@ public class SPATest {
         double surfaceSlope = 30; // degrees
         double surfaceAzimuthRotation = -10; // degrees
         double delta_t = 67; // seconds
-        double h0_prime = SunDeclination.twilight; // degrees
+        double sunElevation = SP.h0_prime; // degrees
         SPAParameters parameters = new SPAParameters(
                 timeInMillis,
                 longitude,
@@ -46,7 +47,7 @@ public class SPATest {
                 surfaceSlope,
                 surfaceAzimuthRotation,
                 delta_t,
-                h0_prime);
+                sunElevation);
         return parameters;
     }
 
@@ -54,110 +55,216 @@ public class SPATest {
     private SPA spa = SPA.from(p);
     private SunriseTransitSunset sunRts = SunriseTransitSunset.from(p);
     private EquationOfTime eot = EquationOfTime.from(spa);
+    private static double ERR_DELTA = Double.MIN_VALUE;
 
     @Test
     public void julianDay() {
-        assertEquals(2452930.312847, spa.getJulianDay(), 2.2212043404579163E-7);
+        double expected = 2452930.312847;
+        double actual = spa.getJulianDay();
+        double actualError = expected - actual;
+        double expectedError = -2.2212043404579163E-7;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void earthHeliocentricLongitude() {
-        assertEquals(24.0182616917, spa.getEarthHeliocentricLongitude(), 2.070166260637052E-11);
+        double expected = 24.0182616917;
+        double actual = spa.getEarthHeliocentricLongitude();
+        double actualError = expected - actual;
+        double expectedError = 2.070166260637052E-11;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void earthHeliocentricLatitude() {
-        assertEquals(-0.0001011219, spa.getEarthHeliocentricLatitude(), 4.830035839602925E-13);
+        double expected = -0.0001011219;
+        double actual = spa.getEarthHeliocentricLatitude();
+        double actualError = expected - actual;
+        double expectedError = -4.830035839602925E-13;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void earthRadiusVector() {
-        assertEquals(0.9965422974, spa.getEarthRadiusVector(), 4.6029180467144215E-11);
+        double expected = 0.9965422974;
+        double actual = spa.getEarthRadiusVector();
+        double actualError = expected - actual;
+        double expectedError = 4.6029180467144215E-11;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void geocentricLongitude() {
-        assertEquals(204.0182616917, spa.getGeocentricLongitude(), 2.0691004465334117E-11);
+        double expected = 204.0182616917;
+        double actual = spa.getGeocentricLongitude();
+        double actualError = expected - actual;
+        double expectedError = 2.0691004465334117E-11;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void geocentricLatitude() {
-        assertEquals(0.0001011219, spa.getGeocentricLatitude(), 4.830035839602925E-13);
+        double expected = 0.0001011219;
+        double actual = spa.getGeocentricLatitude();
+        double actualError = expected - actual;
+        double expectedError = 4.830035839602925E-13;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void nutationLongitude() {
-        assertEquals(-0.00399840, spa.getNutationInLongitude(), 4.303333011115851E-9);
+        double expected = -0.00399840;
+        double actual = spa.getNutationInLongitude();
+        double actualError = expected - actual;
+        double expectedError = 4.303333011115851E-9;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void nutationObliquity() {
-        assertEquals(0.00166657, spa.getNutationInObliquity(), 1.8227504744276757E-9);
+        double expected = 0.00166657;
+        double actual = spa.getNutationInObliquity();
+        double actualError = expected - actual;
+        double expectedError = 1.8227504744276757E-9;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void trueObliquityOfTheEcliptic() {
-        assertEquals(23.440465, spa.getTrueObliquityOfTheEcliptic(), 4.803824751320462E-7);
+        double expected = 23.440465;
+        double actual = spa.getTrueObliquityOfTheEcliptic();
+        double actualError = expected - actual;
+        double expectedError = 4.803824751320462E-7;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void apparentSunLongitude() {
-        assertEquals(204.0085519281, spa.getApparentSunLongitude(), 1.7280399333685637E-11);
+        double expected = 204.0085519281;
+        double actual = spa.getApparentSunLongitude();
+        double actualError = expected - actual;
+        double expectedError = 1.7280399333685637E-11;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void geocentricSunRightAscension() {
-        assertEquals(202.22741, spa.getGeocentricSunRightAscension(), 2.172802339828195E-6);
+        double expected = 202.22741;
+        double actual = spa.getGeocentricSunRightAscension();
+        double actualError = expected - actual;
+        double expectedError = 2.172802339828195E-6;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void geocentricSunDeclination() {
-        assertEquals(-9.31434, spa.getGeocentricSunDeclination(), 9.087256458428783E-8);
+        double expected = -9.31434;
+        double actual = spa.getGeocentricSunDeclination();
+        double actualError = expected - actual;
+        double expectedError = 9.087256458428783E-8;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void observerLocalHourAngle() {
-        assertEquals(11.105900, spa.getObserverLocalHourAngle(), 2.0139612413316854E-6);
+        double expected = 11.105900;
+        double actual = spa.getObserverLocalHourAngle();
+        double actualError = expected - actual;
+        double expectedError = -2.0139612413316854E-6;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void topocentricLocalHourAngle() {
-        assertEquals(11.10629, spa.getTopocentricLocalHourAngle(), 1.945105458922569E-5);
+        double expected = 11.10629;
+        double actual = spa.getTopocentricLocalHourAngle();
+        double actualError = expected - actual;
+        double expectedError = 1.945105458922569E-5;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void topocentricSunRightAscension() {
-        assertEquals(202.22704, spa.getTopocentricSunRightAscension(), 7.077865120663773E-7);
+        double expected = 202.22704;
+        double actual = spa.getTopocentricSunRightAscension();
+        double actualError = expected - actual;
+        double expectedError = 7.077865120663773E-7;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void topocentricSunDeclination() {
-        assertEquals(-9.316179, spa.getTopocentricSunDeclination(), 3.0007232609818857E-7);
+        double expected = -9.316179;
+        double actual = spa.getTopocentricSunDeclination();
+        double actualError = expected - actual;
+        double expectedError = -3.0007232609818857E-7;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void topocentricZenithAngle() {
-        assertEquals(50.11162, spa.getTopocentricZenithAngle(), 2.0242474576548375E-6);
+        double expected = 50.11162;
+        double actual = spa.getTopocentricZenithAngle();
+        double actualError = expected - actual;
+        double expectedError = -2.0242474576548375E-6;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void topocentricAzimuthAngle() {
-        assertEquals(194.34024, spa.getTopocentricAzimuthAngle(), 5.101984470456955E-7);
+        double expected = 194.34024;
+        double actual = spa.getTopocentricAzimuthAngle();
+        double actualError = expected - actual;
+        double expectedError = -5.101984470456955E-7;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void incidenceAngleForSurface() {
-        assertEquals(25.18700, spa.getIncidenceAngleForSurface(), 2.0054617877462988E-7);
+        double expected = 25.18700;
+        double actual = spa.getIncidenceAngleForSurface();
+        double actualError = expected - actual;
+        double expectedError = -2.0054617877462988E-7;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void sunMeanLongitude() {
-        assertEquals(205.8971722516, eot.getSunMeanLongitude(), 3.609557097661309E-11);
+        double expected = 205.8971722516;
+        double actual = eot.getSunMeanLongitude();
+        double actualError = expected - actual;
+        double expectedError = 3.609557097661309E-11;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
     public void equationOfTime() {
-        assertEquals(14.641503, eot.getEquationOfTime(), 7.770857864741743E-6);
+        double expected = 14.641503;
+        double actual = eot.getEquationOfTime();
+        double actualError = expected - actual;
+        double expectedError = -7.770857864741743E-6;
+        assertEquals(expected, actual, abs(expectedError));
+        assertEquals(expectedError, actualError, ERR_DELTA);
     }
 
     @Test
